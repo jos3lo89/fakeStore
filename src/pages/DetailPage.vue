@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { getProductById } from "../api/service";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { productsI } from "../types/types";
 import { useCartStore } from "../context/cartStore";
 
@@ -11,6 +11,7 @@ const route = useRoute();
 
 const product = ref<productsI>({} as productsI);
 const count = ref(1);
+const toggleBtn = ref(false);
 
 const loadProduct = async () => {
   try {
@@ -21,15 +22,31 @@ const loadProduct = async () => {
   }
 };
 
-onMounted(() => {
-  loadProduct();
-});
-
 const decrement = () => {
   if (count.value > 1) {
     count.value--;
   }
 };
+
+const reloadPAge = () => {
+  const id = Array.isArray(route.params.id)
+    ? route.params.id[0]
+    : route.params.id;
+  const productId = parseInt(id);
+
+  const findProduct = cartStore.cartList.find((p) => p.id == productId);
+  toggleBtn.value = !!findProduct;
+};
+
+onMounted(() => {
+  loadProduct();
+
+  reloadPAge();
+});
+
+watch(cartStore, () => {
+  reloadPAge();
+});
 </script>
 
 <template>
@@ -69,10 +86,18 @@ const decrement = () => {
           </button>
         </div>
         <button
+          v-if="!toggleBtn"
           @click="cartStore.addToCart({ ...product, quantity: count })"
           class="bg-blue-600 px-2 py-1 rounded-md"
         >
           Añadir al Carrito
+        </button>
+        <button
+          v-else
+          @click="cartStore.deleteProduct(product.id)"
+          class="bg-red-600 px-2 py-1 rounded-md"
+        >
+          Quitar al Carrito
         </button>
       </div>
     </div>
