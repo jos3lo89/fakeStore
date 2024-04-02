@@ -2,12 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-.cart-box {
-  overflow-y: auto;
+*::-webkit-scrollbar {
+  /* display: none; */
+  width: 10px;
+  background-color: #111827;
+
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #374151;
+
 }
 
+
+.cart-box {
+  overflow-y: scroll;
+}
+
+
 .cart-box::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
+  width: 10px;
+  background-color: #082f49;
+
+}
+
+.cart-box::-webkit-scrollbar-thumb {
+  /* display: none; */
+  background-color: #0d4ed8;
+
 }
 
 .router-link-active {
